@@ -26,6 +26,7 @@ input[type="submit"] {
     border: none;
     border-radius: 4px;
     font-weight: 500;
+    cursor: pointer;
 }
 
 h1 {
@@ -55,6 +56,14 @@ select {
     padding: 0.5rem;
     border: none;
     cursor: pointer;
+}
+
+.error {
+    color: #d1302d;
+}
+
+.success {
+    color: #43ad00;
 }
 
 .basket {

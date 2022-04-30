@@ -1,95 +1,19 @@
 <?php
 
-$items = [
-    [
-        "description" => "Carte mère MSI B550-A Pro ATX - Socket AM4",
-        "price" => 101.99,
-        "image" => "01.jpg",
-        "quantity" => 1
-    ],
-    [
-        "description" => "Imprimante jet d'encre multifonctions HP DeskJet 2721e - WiFi + 6 mois de forfait d'impression Instant Ink",
-        "price" => 49.99,
-        "image" => "02.jpg",
-        "quantity" => 1
-    ],
-    [
-        "description" => "PC Portable 15.6' Lenovo IdeaPad 3 15ALC6 - Full HD, Ryzen 3 5300U, RAM 8 Go, SSD 128 Go, Windows 11",
-        "price" => 424.99,
-        "image" => "03.jpg",
-        "quantity" => 1
-    ],
-];
-
-$promoCodes = [
-    "NOUNOURS10",
-    "TROP_BIEN",
-    "MAIS_LE_PERE_NOEL_EXISTE"
-];
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') :
-
-    for ($i = 0; $i < count($items); $i++) {
-        $items[$i]["quantity"] = intval($_POST["item$i"]);
-    }
-
-
-    if (!isset($_POST['applyCode'])) {
-        echo "<p>Please submit form using the button</p>";
-        return;
-    }
-
-    $promoCode = trim(htmlspecialchars($_POST['promoCode']));
-
-    if (!in_array($promoCode, $promoCodes)) {
-        $errorMessage = "Le code promo $promoCode est invalide.";
-    } else {
-
-        $total = 0;
-        foreach ($items as $item) {
-            $total += $item["quantity"] * $item["price"];
-        }
-
-        switch ($promoCode) {
-            case "NOUNOURS10":
-                $successMessage = "-10%";
-                $discount = number_format($total * 0.1, 2);
-                break;
-            case "TROP_BIEN":
-                $successMessage = "-30%";
-                $discount = number_format($total * 0.3, 2);
-                break;
-            case "MAIS_LE_PERE_NOEL_EXISTE":
-                $successMessage = "-75% sur l'article le moins cher";
-
-                // les objets sont filtrés du moins cher au plus cher
-                $prices = array_column($items, 'price');
-                array_multisort($prices, SORT_ASC, $items);
-
-                foreach ($items as $item) {
-                    if ($item["quantity"] !== 0) {
-                        $discount = number_format($item['price'] * 0.75, 2);
-                        break;
-                    }
-                }
-
-                break;
-        }
-    }
-
-endif;
+require_once("./_includes/data.php");
+require_once("./engine/process.php");
 
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panier</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./styles.css">
 </head>
 
 <body>
@@ -103,10 +27,11 @@ endif;
                     <div class="basket__item">
 
                         <div class="basket__item__image">
-                            <img src="<?= $item["image"] ?>" alt="">
+                            <img src="<?= $item["image"] ?>" alt="<?= $item["shortDesc"] ?>">
                         </div>
 
                         <div class="basket__item__right">
+
                             <div class="basket__item__right__top">
                                 <div class="basket__item__text">
                                     <?= $item["description"] ?>
@@ -115,7 +40,6 @@ endif;
                                     <?= $item["price"] ?>€
                                 </div>
                             </div>
-
 
                             <div class="basket__item__quantity">
                                 <p>Quantité</p>
@@ -155,9 +79,9 @@ endif;
                         <input type="text" name="promoCode" placeholder="Entrez un code promo" required>
                     <?php endif;  ?>
 
-                    <?php if (isset($errorMessage))  echo $errorMessage; ?>
+                    <?php if (isset($errorMessage))  echo "<p class='error'>$errorMessage</p>"; ?>
                     <?php if (isset($successMessage)) : ?>
-                        <p>Code promo : <?= $promoCode ?> (<?= $successMessage ?>)</p>
+                        <p class="success">Votre code <b><?= $promoCode ?></b> (<?= $successMessage ?>) a bien été appliqué</p>
                     <?php endif;  ?>
 
                     <?php if (!isset($successMessage)) : ?>
@@ -169,7 +93,7 @@ endif;
     </form>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
-    <script src="app.js"></script>
+    <script src="./app.js"></script>
 
 </body>
 

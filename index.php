@@ -13,21 +13,22 @@ require_once("./engine/process.php");
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panier</title>
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./assets/css/styles.css">
 </head>
 
 <body>
 
     <form method="POST">
-        <h1>Mon panier</h1>
+        <h1></i>Mon panier</h1>
         <div class="basket">
             <div class="basket__items">
 
-                <?php foreach ($items as $item) : ?>
+                <?php foreach ($items as $item) : // For each item in items array => create a basket__item div 
+                ?>
                     <div class="basket__item">
 
                         <div class="basket__item__image">
-                            <img src="<?= $item["image"] ?>" alt="<?= $item["shortDesc"] ?>">
+                            <img src="./assets/images/<?= $item["image"] ?>" alt="<?= $item["shortDesc"] ?>">
                         </div>
 
                         <div class="basket__item__right">
@@ -43,10 +44,14 @@ require_once("./engine/process.php");
 
                             <div class="basket__item__quantity">
                                 <p>Quantité</p>
-                                <select name="<?= "item" . array_search($item, $items) ?>">
+                                <select name="<?= "item" . array_search($item, $items) // Give to the select a name based on current item index 
+                                                ?>">
 
                                     <?php for ($i = 0; $i < 11; $i++) : ?>
-                                        <option value=<?= $i ?> <?= ($i === $item["quantity"]) ? "selected" : "" ?>><?= $i ?></option>
+                                        <option value=<?= $i ?> <?= ($i === $item["quantity"]) ? "selected" : "" // Give to the select a default selected value based on current item quantity 
+                                                                ?>>
+                                            <?= $i ?>
+                                        </option>
                                     <?php endfor; ?>
 
                                 </select>
@@ -60,31 +65,36 @@ require_once("./engine/process.php");
             </div>
 
             <div class="total">
-                <h2>Total</h2>
+
                 <div class="total__block">
                     <div class="total__block__sub">
                         <span>Sous-total</span><span class="total__block__sub__price"></span>
                     </div>
 
-                    <?php if (isset($discount)) : ?>
+                    <?php if (isset($discount)) : // If discount variable is set it means a correct promo code has been used 
+                    ?>
                         <div class="total__block__sub">
-                            <span>Réductions</span><span>- <?= $discount ?>€</span>
+                            <span>Total remise(s)</span><span>- <?= $discount ?>€</span>
                         </div>
-                        <div class="total__block__sub">
+                        <div class="total__block__sub border__top">
                             <span>Total</span><span><?= $total - $discount ?>€</span>
                         </div>
                     <?php endif;  ?>
 
-                    <?php if (!isset($successMessage)) : ?>
+                    <?php if (!isset($successMessage)) : // If a promo code has been used successfully we hide the promo code input 
+                    ?>
                         <input type="text" name="promoCode" placeholder="Entrez un code promo" required>
                     <?php endif;  ?>
 
-                    <?php if (isset($errorMessage))  echo "<p class='error'>$errorMessage</p>"; ?>
-                    <?php if (isset($successMessage)) : ?>
+                    <?php if (isset($errorMessage))  echo "<p class='error'>$errorMessage</p>"; // If an incorrect code has been used 
+                    ?>
+                    <?php if (isset($successMessage)) : // If a orrect code has been used 
+                    ?>
                         <p class="success">Votre code <b><?= $promoCode ?></b> (<?= $successMessage ?>) a bien été appliqué</p>
                     <?php endif;  ?>
 
-                    <?php if (!isset($successMessage)) : ?>
+                    <?php if (!isset($successMessage)) : // If a promo code has been used successfully we hide the submit button 
+                    ?>
                         <input type="submit" name="applyCode" value="Appliquer le code promo">
                     <?php endif;  ?>
                 </div>
@@ -93,7 +103,7 @@ require_once("./engine/process.php");
     </form>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
-    <script src="./app.js"></script>
+    <script src="./assets/js/app.js"></script>
 
 </body>
 

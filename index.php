@@ -102,7 +102,6 @@ require_once("./engine/process.php");
         </div>
     </form>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
     <script src="./assets/js/app.js"></script>
 
 </body>
